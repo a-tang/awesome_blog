@@ -1,4 +1,5 @@
 class CommentsController < ApplicationController
+before_action :authenticate_user!, except: [:index, :show]
 
   def create
     @article          = Article.find(params[:article_id])
@@ -6,6 +7,7 @@ class CommentsController < ApplicationController
     @comment          = Comment.new comment_params
     # @comment        = @article.comments.create(comment_params)
     @comment.article  = @article
+    @comment.user     = current_user
     if @comment.save
       redirect_to article_path(@article)
       flash[:notice]  = "Thanks for the comment"
