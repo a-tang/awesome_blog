@@ -3,14 +3,17 @@ class ArticlesController < ApplicationController
   def index
     @articles = Article.all
     if params[:search]
-      @articles = Article.search(params[:search]).order("created_at DESC")
-    else
-      @articles = Article.all.order('created_at DESC')
-    end
+        @articles = Article.search(params[:search]).order("created_at DESC")
+      else
+        @articles = Article.all.order('created_at DESC')
+      end
   end
 
   def show
     @article = Article.find(params[:id])
+  end
+
+  def about
   end
 
   def new
@@ -22,7 +25,7 @@ class ArticlesController < ApplicationController
   end
 
   def create
-    @article = Article.new(params.require(:article).permit(:title, :text))
+    @article = Article.new(params.require(:article).permit(:title, :text, :category_id))
 
     if @article.save
       redirect_to @article
@@ -33,13 +36,14 @@ class ArticlesController < ApplicationController
 
   def update
     @article = Article.find(params[:id])
-
-    if @article.update(article_params)
+    article_params = params.require(:article).permit([:title, :text, :category_id])
+    if @article.update article_params
       redirect_to @article
     else
       render 'edit'
     end
   end
+
 
   def destroy
     @article = Article.find(params[:id])

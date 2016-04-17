@@ -2,9 +2,9 @@ Rails.application.routes.draw do
 
 
   resources :articles do
-    resources :comments
+    resources :comments, only: [:create, :destroy]
   end
-
+  get "/about" => "articles#about", as: :about_us
   root 'welcome#index'
 
 
