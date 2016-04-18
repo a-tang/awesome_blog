@@ -18,20 +18,23 @@
       <a class="navbar-brand" <%= link_to "Blog Awesome", root_path %></a>
     </div>
     <ul class="nav navbar-nav">
-      <li><a <%= link_to "About", about_us_path %></a></li>
-      <% if user_signed_in? %>
-      <li><a <%= link_to "Create Post", new_article_path %></a></li>
-      <li><a <%= link_to "All Posts", articles_path %></a></li>
+      <li class="active"><%= link_to "About", about_us_path %></li>
+    <% if user_signed_in? %>
+      <li><%= link_to "Create Post", new_article_path %></li>
+      <li><%= link_to "All Posts", articles_path %></li>
+       <li>Hello <%= current_user.first_name %></li>
     </ul>
-    <ul class="nav navbar-nav navbar-right">
-      <li><a <%= link_to "Log out", sessions_path, method: :delete %></a></li>
-      <% else %>
-      <li><a <<%= link_to "Log In", new_session_path %></a></li>
-      <li><a <%= link_to "Sign Up", new_user_path %></a></li>
-    <% end %>
-    </ul>
-  </div>
-</nav>
+      <ul class="nav navbar-nav navbar-right">
+        <li><a href="<% link_to sessions_path, method: :delete %>"><span class="glyphicon glyphicon-log-in"></span> Logout</a></li>
+         <li><a href="<% link_to new_user_path %>"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
+         <li><a href="<% link_to new_session_path %>"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+         <% else %>
+       </ul>
+       <% end %>
+     </div>
+   </nav>
+
+
 
 <%= notice || alert %>
 
