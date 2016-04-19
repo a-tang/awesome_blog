@@ -1,5 +1,7 @@
 class CommentsController < ApplicationController
-before_action :authenticate_user!, except: [:index, :show]
+before_action :authenticate_user!
+before_action :find_article
+before_action :find_and_authorize_comment, only: :destroy
 
   def create
     @article          = Article.find(params[:article_id])
@@ -18,15 +20,22 @@ before_action :authenticate_user!, except: [:index, :show]
   end
 
   def destroy
-    @article  = Article.find(params[:article_id])
-    @comment  = @article.comments.find(params[:id])
     @comment.destroy
     redirect_to article_path(@article), notice: "Comment deleted!"
   end
 
   private
 
-    def comment_params
-      params.require(:comment).permit(:commenter, :body)
-    end
+  def find_article
+    @article = Article.find params[:article_id]
+  end
+
+  def find_and_authorize_comment
+    @comment = @article.comments.find params[:id]
+    redirect_to root_path unless can? :destroy, @comment
+  end
+
+  def comment_params
+    params.require(:comment).permit(:commenter, :body)
+  end
 end

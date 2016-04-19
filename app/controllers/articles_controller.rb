@@ -1,5 +1,7 @@
 class ArticlesController < ApplicationController
 before_action :authenticate_user!, except: [:index, :show, :about]
+before_action :find_article, only: [:edit, :update, :destroy, :show]
+before_action :authorize_question, only: [:edit, :update, :destroy]
 
   def index
     @articles = Article.all
@@ -36,10 +38,10 @@ before_action :authenticate_user!, except: [:index, :show, :about]
   end
 
   def update
-    @article = Article.find(params[:id])
-    article_params = params.require(:article).permit([:title, :text, :category_id])
+    # @article = Article.find(params[:id])
+    # article_params = params.require(:article).permit([:title, :text, :category_id])
     if @article.update article_params
-      redirect_to @article
+      redirect_to @article, notice: "Article updated!"
     else
       render 'edit'
     end
@@ -47,10 +49,23 @@ before_action :authenticate_user!, except: [:index, :show, :about]
 
 
   def destroy
-    @article = Article.find(params[:id])
+    # @article = Article.find(params[:id])
     @article.destroy
+    redirect_to articles_path, notice: "Article: #{@article.title} deleted!"
+  end
 
-    redirect_to articles_path
+  private
+
+  def authorize_question
+    redirect_to root_path unless can? :manage, @article
+  end
+
+  def find_article
+    @article = Article.find params[:id]
+  end
+
+  def article_params
+    params.require(:article).permit([:title, :text, :category_id])
   end
 
 end
